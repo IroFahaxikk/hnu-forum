@@ -4878,6 +4878,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/answer/api/v1/personal/content/top": {
+            "get": {
+                "description": "List a user's top forum posts and comments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Personal"
+                ],
+                "summary": "UserContentTop",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.RespBody"
+                        }
+                    }
+                }
+            }
+        },
         "/answer/api/v1/personal/qa/top": {
             "get": {
                 "description": "UserTop",
@@ -9989,6 +10021,10 @@ const docTemplate = `{
                     "description": "Color scheme",
                     "type": "string"
                 },
+                "comment_count": {
+                    "description": "forum comment count (compatibility alias of answer_count)",
+                    "type": "integer"
+                },
                 "created_at": {
                     "description": "create time",
                     "type": "integer"
@@ -10035,6 +10071,10 @@ const docTemplate = `{
                 },
                 "notice_status": {
                     "description": "notice status(1 on 2off)",
+                    "type": "integer"
+                },
+                "post_count": {
+                    "description": "forum post count (compatibility alias of question_count)",
                     "type": "integer"
                 },
                 "question_count": {
@@ -10131,6 +10171,10 @@ const docTemplate = `{
                     "description": "bio html",
                     "type": "string"
                 },
+                "comment_count": {
+                    "description": "forum comment count (compatibility alias of answer_count)",
+                    "type": "integer"
+                },
                 "created_at": {
                     "description": "create time",
                     "type": "integer"
@@ -10158,6 +10202,10 @@ const docTemplate = `{
                 "mobile": {
                     "description": "mobile",
                     "type": "string"
+                },
+                "post_count": {
+                    "description": "forum post count (compatibility alias of question_count)",
+                    "type": "integer"
                 },
                 "question_count": {
                     "description": "question count",
@@ -13327,6 +13375,10 @@ const docTemplate = `{
                     "description": "Color scheme",
                     "type": "string"
                 },
+                "comment_count": {
+                    "description": "forum comment count (compatibility alias of answer_count)",
+                    "type": "integer"
+                },
                 "created_at": {
                     "description": "create time",
                     "type": "integer"
@@ -13373,6 +13425,10 @@ const docTemplate = `{
                 },
                 "notice_status": {
                     "description": "notice status(1 on 2off)",
+                    "type": "integer"
+                },
+                "post_count": {
+                    "description": "forum post count (compatibility alias of question_count)",
                     "type": "integer"
                 },
                 "question_count": {
