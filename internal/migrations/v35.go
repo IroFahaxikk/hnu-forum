@@ -55,7 +55,7 @@ func addCampusForumSections(ctx context.Context, x *xorm.Engine) error {
 		{ID: 402, ParentID: 4, Slug: "lost-found", Name: "失物招领", Sort: 402, Status: 1},
 		{ID: 403, ParentID: 4, Slug: "carpool", Name: "拼车同行", Sort: 403, Status: 1},
 		{ID: 404, ParentID: 4, Slug: "part-time-jobs", Name: "兼职信息中心", Sort: 404, Status: 1},
-		{ID: 501, ParentID: 5, Slug: "site-announcements", Name: "站务公告", Sort: 501, AdminOnly: true, Status: 1},
+		{ID: entity.ForumSectionSiteAnnouncementsID, ParentID: 5, Slug: "site-announcements", Name: "站务公告", Sort: 501, AdminOnly: true, Status: 1},
 	}
 	for _, section := range sections {
 		exists, err := x.Context(ctx).ID(section.ID).Exist(new(entity.ForumSection))

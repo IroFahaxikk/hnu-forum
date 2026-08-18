@@ -37,7 +37,7 @@ import {
   useQuestionList,
 } from '@/services';
 import QuestionList, { QUESTION_ORDER_KEYS } from '@/components/QuestionList';
-import HotQuestions from '@/components/HotQuestions';
+import FeaturedPosts from '@/components/FeaturedPosts';
 import { guard, pageTitleType } from '@/utils';
 import { pathFactory } from '@/router/pathFactory';
 
@@ -193,7 +193,7 @@ const Index: FC = () => {
       <Col className="page-right-side mt-4 mt-xl-0">
         <CustomSidebar />
         <FollowingTags />
-        <HotQuestions />
+        <FeaturedPosts />
       </Col>
     </Row>
   );

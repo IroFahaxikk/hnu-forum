@@ -5318,6 +5318,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/answer/api/v1/question/announcement/popup": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "claim unread site announcement popups",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.RespBody"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.AnnouncementPopupResp"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/answer/api/v1/question/answer": {
             "post": {
                 "security": [
@@ -5552,7 +5591,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Operation question \\n operation [pin unpin hide show]",
+                "description": "Operation question \\n operation [pin unpin hide show feature unfeature]",
                 "consumes": [
                     "application/json"
                 ],
@@ -9226,6 +9265,26 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.AnnouncementPopupResp": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url_title": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.AnswerAddReq": {
             "type": "object",
             "required": [
@@ -11057,15 +11116,24 @@ const docTemplate = `{
         "schema.OperationQuestionReq": {
             "type": "object",
             "required": [
-                "id"
+                "id",
+                "operation"
             ],
             "properties": {
                 "id": {
                     "type": "string"
                 },
                 "operation": {
-                    "description": "operation [pin unpin hide show]",
-                    "type": "string"
+                    "description": "operation [pin unpin hide show feature unfeature]",
+                    "type": "string",
+                    "enum": [
+                        "pin",
+                        "unpin",
+                        "hide",
+                        "show",
+                        "feature",
+                        "unfeature"
+                    ]
                 }
             }
         },
@@ -11250,6 +11318,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/schema.PermissionMemberAction"
                     }
                 },
+                "featured": {
+                    "type": "integer"
+                },
                 "first_answer_id": {
                     "type": "string"
                 },
@@ -11344,7 +11415,8 @@ const docTemplate = `{
                         "score",
                         "unanswered",
                         "recommend",
-                        "frequent"
+                        "frequent",
+                        "featured"
                     ]
                 },
                 "page": {
@@ -11379,6 +11451,14 @@ const docTemplate = `{
                 "answer_count": {
                     "type": "integer"
                 },
+                "author": {
+                    "description": "author information",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/schema.QuestionPageRespOperator"
+                        }
+                    ]
+                },
                 "collection_count": {
                     "type": "integer"
                 },
@@ -11387,6 +11467,10 @@ const docTemplate = `{
                 },
                 "description": {
                     "type": "string"
+                },
+                "featured": {
+                    "description": "1: normal, 2: featured",
+                    "type": "integer"
                 },
                 "follow_count": {
                     "type": "integer"

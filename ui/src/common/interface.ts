@@ -278,6 +278,14 @@ export interface QuestionDetailRes {
   [prop: string]: any;
 }
 
+export interface AnnouncementPopupItem {
+  id: string;
+  title: string;
+  url_title: string;
+  description: string;
+  create_time: number;
+}
+
 export interface AnswersReq extends Paging {
   order?: 'default' | 'updated' | 'created';
   question_id: string;
@@ -322,7 +330,8 @@ export type QuestionOrderBy =
   | 'hot'
   | 'score'
   | 'unanswered'
-  | 'frequent';
+  | 'frequent'
+  | 'featured';
 
 export interface QueryQuestionsReq extends Paging {
   order: QuestionOrderBy;
@@ -707,7 +716,7 @@ export interface MemberActionItem {
 
 export interface QuestionOperationReq {
   id: string;
-  operation: 'pin' | 'unpin' | 'hide' | 'show';
+  operation: 'pin' | 'unpin' | 'hide' | 'show' | 'feature' | 'unfeature';
 }
 
 export interface OauthBindEmailReq {

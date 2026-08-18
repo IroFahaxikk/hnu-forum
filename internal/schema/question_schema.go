@@ -33,10 +33,12 @@ import (
 )
 
 const (
-	QuestionOperationPin   = "pin"
-	QuestionOperationUnPin = "unpin"
-	QuestionOperationHide  = "hide"
-	QuestionOperationShow  = "show"
+	QuestionOperationPin       = "pin"
+	QuestionOperationUnPin     = "unpin"
+	QuestionOperationHide      = "hide"
+	QuestionOperationShow      = "show"
+	QuestionOperationFeature   = "feature"
+	QuestionOperationUnfeature = "unfeature"
 )
 
 // RemoveQuestionReq delete question request
@@ -57,11 +59,12 @@ type CloseQuestionReq struct {
 }
 
 type OperationQuestionReq struct {
-	ID        string `validate:"required" json:"id"`
-	Operation string `json:"operation"` // operation [pin unpin hide show]
-	UserID    string `json:"-"`         // user_id
-	CanPin    bool   `json:"-"`
-	CanList   bool   `json:"-"`
+	ID               string `validate:"required" json:"id"`
+	Operation        string `validate:"required,oneof=pin unpin hide show feature unfeature" json:"operation"` // operation [pin unpin hide show feature unfeature]
+	UserID           string `json:"-"`                                                                         // user_id
+	CanPin           bool   `json:"-"`
+	CanList          bool   `json:"-"`
+	IsAdminModerator bool   `json:"-"`
 }
 
 type CloseQuestionMeta struct {
@@ -161,6 +164,9 @@ type QuestionPermission struct {
 	// whether user can pin it
 	CanPin   bool `json:"-"`
 	CanUnPin bool `json:"-"`
+	// whether an administrator or moderator can feature it
+	CanFeature   bool `json:"-"`
+	CanUnfeature bool `json:"-"`
 	// whether user can hide it
 	CanHide bool `json:"-"`
 	CanShow bool `json:"-"`
@@ -255,6 +261,7 @@ type QuestionInfoResp struct {
 	PostUpdateTime       int64          `json:"update_time"`
 	QuestionUpdateTime   int64          `json:"edit_time"`
 	Pin                  int            `json:"pin"`
+	Featured             int            `json:"featured"`
 	Show                 int            `json:"show"`
 	Status               int            `json:"status"`
 	Operation            *Operation     `json:"operation,omitempty"`
@@ -364,6 +371,7 @@ const (
 	QuestionOrderCondUnanswered = "unanswered"
 	QuestionOrderCondRecommend  = "recommend"
 	QuestionOrderCondFrequent   = "frequent"
+	QuestionOrderCondFeatured   = "featured"
 
 	// HotInDays limit max days of the hottest question
 	HotInDays = 90
@@ -373,7 +381,7 @@ const (
 type QuestionPageReq struct {
 	Page      int    `validate:"omitempty,min=1" form:"page"`
 	PageSize  int    `validate:"omitempty,min=1" form:"page_size"`
-	OrderCond string `validate:"omitempty,oneof=newest active hot score unanswered recommend frequent" form:"order"`
+	OrderCond string `validate:"omitempty,oneof=newest active hot score unanswered recommend frequent featured" form:"order"`
 	Tag       string `validate:"omitempty,gt=0,lte=100" form:"tag"`
 	Username  string `validate:"omitempty,gt=0,lte=100" form:"username"`
 	InDays    int    `validate:"omitempty,min=1" form:"in_days"`
@@ -397,8 +405,9 @@ type QuestionPageResp struct {
 	Title       string     `json:"title"`
 	UrlTitle    string     `json:"url_title"`
 	Description string     `json:"description"`
-	Pin         int        `json:"pin"`  // 1: unpin, 2: pin
-	Show        int        `json:"show"` // 0: show, 1: hide
+	Pin         int        `json:"pin"`      // 1: unpin, 2: pin
+	Featured    int        `json:"featured"` // 1: normal, 2: featured
+	Show        int        `json:"show"`     // 0: show, 1: hide
 	Status      int        `json:"status"`
 	Tags        []*TagResp `json:"tags"`
 	SectionID   int64      `json:"section_id"`
@@ -417,6 +426,9 @@ type QuestionPageResp struct {
 	LastAnsweredUserID string    `json:"-"`
 	LastAnsweredAt     time.Time `json:"-"`
 
+	// author information
+	Author *QuestionPageRespOperator `json:"author"`
+
 	// operator information
 	OperatedAt    int64                     `json:"operated_at"`
 	Operator      *QuestionPageRespOperator `json:"operator"`
@@ -430,6 +442,15 @@ type QuestionPageRespOperator struct {
 	DisplayName string `json:"display_name"`
 	Status      string `json:"status"`
 	Avatar      string `json:"avatar"`
+}
+
+// AnnouncementPopupResp is an unread site announcement delivered in a popup.
+type AnnouncementPopupResp struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	UrlTitle    string `json:"url_title"`
+	Description string `json:"description"`
+	CreateTime  int64  `json:"create_time"`
 }
 
 type AdminQuestionPageReq struct {

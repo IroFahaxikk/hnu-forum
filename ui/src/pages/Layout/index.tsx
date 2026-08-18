@@ -38,6 +38,7 @@ import {
   CustomizeTheme,
   PageTags,
   HttpErrorContent,
+  AnnouncementPopup,
 } from '@/components';
 import { LoginToContinueModal } from '@/components/Modal';
 import { changeTheme, Storage, scrollToElementTop } from '@/utils';
@@ -222,6 +223,7 @@ const Layout: FC = () => {
         </div>
         <Toast msg={toastMsg} variant={variant} onClose={closeToast} />
         <Customize />
+        <AnnouncementPopup />
         <LoginToContinueModal visible={showLoginToContinueModal} />
         <ScrollRestoration />
       </SWRConfig>

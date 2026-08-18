@@ -24,9 +24,8 @@ import { useTranslation } from 'react-i18next';
 
 import { usePageTags } from '@/hooks';
 import {
-  FollowingTags,
   QuestionList,
-  HotQuestions,
+  FeaturedPosts,
   CustomSidebar,
   CampusSectionNav,
 } from '@/components';
@@ -120,8 +119,7 @@ const Questions: FC = () => {
             </div>
           </div>
         )}
-        {loggedUser.access_token && <FollowingTags />}
-        <HotQuestions />
+        <FeaturedPosts />
       </Col>
     </Row>
   );

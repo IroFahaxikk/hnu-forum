@@ -164,7 +164,7 @@ const QuestionList: FC<Props> = ({
                   className="py-3 px-2 border-start-0 border-end-0 position-relative pointer">
                   <div className="d-flex flex-wrap text-secondary small mb-12">
                     <BaseUserCard
-                      data={li.operator}
+                      data={li.author}
                       className="me-1"
                       avatarClass="me-1"
                     />

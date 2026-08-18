@@ -50,12 +50,11 @@ export const useQuestionRecommendList = (params: Type.QueryQuestionsReq) => {
   };
 };
 
-export const useHotQuestions = (
+export const useFeaturedQuestions = (
   params: Type.QueryQuestionsReq = {
     page: 1,
     page_size: 6,
-    order: 'hot',
-    in_days: 7,
+    order: 'featured',
   },
 ) => {
   const apiUrl = `/answer/api/v1/question/page?${qs.stringify(params)}`;
@@ -68,6 +67,12 @@ export const useHotQuestions = (
     isLoading: !data && !error,
     error,
   };
+};
+
+export const claimAnnouncementPopups = () => {
+  return request.post<Type.AnnouncementPopupItem[]>(
+    '/answer/api/v1/question/announcement/popup',
+  );
 };
 
 export const useSimilarQuestion = (params: {

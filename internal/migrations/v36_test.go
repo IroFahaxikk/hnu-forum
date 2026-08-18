@@ -17,41 +17,19 @@
  * under the License.
  */
 
-package entity
+package migrations
 
 import (
+	"context"
+	"testing"
 	"time"
+
+	"github.com/apache/answer/internal/entity"
+	"github.com/stretchr/testify/require"
+	"xorm.io/xorm"
 )
 
-const (
-	QuestionStatusAvailable = 1
-	QuestionStatusClosed    = 2
-	QuestionStatusDeleted   = 10
-	QuestionStatusPending   = 11
-	QuestionUnPin           = 1
-	QuestionPin             = 2
-	QuestionUnfeatured      = 1
-	QuestionFeatured        = 2
-	QuestionShow            = 1
-	QuestionHide            = 2
-)
-
-var AdminQuestionSearchStatus = map[string]int{
-	"available": QuestionStatusAvailable,
-	"closed":    QuestionStatusClosed,
-	"deleted":   QuestionStatusDeleted,
-	"pending":   QuestionStatusPending,
-}
-
-var AdminQuestionSearchStatusIntToString = map[int]string{
-	QuestionStatusAvailable: "available",
-	QuestionStatusClosed:    "closed",
-	QuestionStatusDeleted:   "deleted",
-	QuestionStatusPending:   "pending",
-}
-
-// Question question
-type Question struct {
+type questionBeforeFeatured struct {
 	ID               string    `xorm:"not null pk BIGINT(20) id"`
 	CreatedAt        time.Time `xorm:"not null default CURRENT_TIMESTAMP TIMESTAMP created_at"`
 	UpdatedAt        time.Time `xorm:"updated_at TIMESTAMP"`
@@ -63,8 +41,6 @@ type Question struct {
 	OriginalText     string    `xorm:"not null MEDIUMTEXT original_text"`
 	ParsedText       string    `xorm:"not null MEDIUMTEXT parsed_text"`
 	Pin              int       `xorm:"not null default 1 INT(11) pin"`
-	Featured         int       `xorm:"not null default 1 INT(11) INDEX featured"`
-	FeaturedAt       int64     `xorm:"not null default 0 BIGINT(20) featured_at"`
 	Show             int       `xorm:"not null default 1 INT(11) show"`
 	Status           int       `xorm:"not null default 1 INT(11) status"`
 	ViewCount        int       `xorm:"not null default 0 INT(11) view_count"`
@@ -81,25 +57,27 @@ type Question struct {
 	LinkedCount      int       `xorm:"not null default 0 INT(11) linked_count"`
 }
 
-// TableName question table name
-func (Question) TableName() string {
+func (questionBeforeFeatured) TableName() string {
 	return "question"
 }
 
-// QuestionWithTagsRevision question
-type QuestionWithTagsRevision struct {
-	Question
-	Tags []*TagSimpleInfoForRevision `json:"tags"`
-}
+func TestAddFeaturedQuestions(t *testing.T) {
+	x, err := xorm.NewEngine("sqlite", ":memory:")
+	require.NoError(t, err)
+	defer func() {
+		_ = x.Close()
+	}()
 
-// TagSimpleInfoForRevision tag simple info for revision
-type TagSimpleInfoForRevision struct {
-	ID              string `xorm:"not null pk comment('tag_id') BIGINT(20) id"`
-	MainTagID       int64  `xorm:"not null default 0 BIGINT(20) main_tag_id"`
-	MainTagSlugName string `xorm:"not null default '' VARCHAR(35) main_tag_slug_name"`
-	SlugName        string `xorm:"not null default '' unique VARCHAR(35) slug_name"`
-	DisplayName     string `xorm:"not null default '' VARCHAR(35) display_name"`
-	Recommend       bool   `xorm:"not null default false BOOL recommend"`
-	Reserved        bool   `xorm:"not null default false BOOL reserved"`
-	RevisionID      string `xorm:"not null default 0 BIGINT(20) revision_id"`
+	require.NoError(t, x.Sync(new(questionBeforeFeatured)))
+	_, err = x.Insert(&questionBeforeFeatured{ID: "1"})
+	require.NoError(t, err)
+
+	require.NoError(t, addFeaturedQuestions(context.Background(), x))
+
+	question := &entity.Question{}
+	exists, err := x.ID("1").Get(question)
+	require.NoError(t, err)
+	require.True(t, exists)
+	require.Equal(t, entity.QuestionUnfeatured, question.Featured)
+	require.Zero(t, question.FeaturedAt)
 }

@@ -51,6 +51,10 @@ backend:
       other: 列表隐藏
     unpin:
       other: 取消置顶
+    feature:
+      other: 设为精华
+    unfeature:
+      other: 取消精华
     show:
       other: 列表显示
     invite_someone_to_answer:
@@ -888,6 +892,9 @@ ui:
     answer: 回答
     question: 问题
     badge_award: 徽章
+  announcement_popup:
+    title: 站务公告
+    description: 以下是你尚未阅读的站务公告：
   suspended:
     title: 你的账号账号已被封禁
     until_time: "你的账号被封禁直到 {{ time }}。"
@@ -1507,6 +1514,10 @@ ui:
       title: 置顶该帖子
       content: 你确定要全局置顶吗？这个帖子将出现在所有帖子列表的顶部。
       confirm_btn: 置顶
+    feature:
+      title: 将该帖子设为精华
+      content: 确定将该帖子加入精华帖子吗？
+      confirm_btn: 设为精华
   delete:
     title: 删除
     question: >-
@@ -1628,7 +1639,8 @@ ui:
     edit: 编辑
     save: 保存
     follow_tag_tip: 关注标签来筛选你的问题列表。
-    hot_questions: 热门问题
+    hot_questions: 热门帖子
+    featured_posts: 精华帖子
     all_questions: 校园帖子
     x_questions: "{{ count }} 个问题"
     x_answers: "{{ count }} 个回答"
@@ -2486,6 +2498,8 @@ ui:
     post_cancel_deleted: 此帖子已被删除
     post_pin: 该帖子已被置顶。
     post_unpin: 该帖子已被取消置顶。
+    post_feature: 该帖子已设为精华。
+    post_unfeature: 该帖子已取消精华。
     post_hide_list: 此帖子已经从列表中隐藏。
     post_show_list: 该帖子已显示到列表中。
     post_reopen: 这个帖子已被重新打开.

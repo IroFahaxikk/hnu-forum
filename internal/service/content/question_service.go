@@ -393,6 +393,7 @@ func (qs *QuestionService) AddQuestion(ctx context.Context, req *schema.Question
 	question.CreatedAt = now
 	question.PostUpdateTime = now
 	question.Pin = entity.QuestionUnPin
+	question.Featured = entity.QuestionUnfeatured
 	question.Show = entity.QuestionShow
 	// question.UpdatedAt = nil
 	err = qs.questionRepo.AddQuestion(ctx, question)
@@ -536,6 +537,12 @@ func (qs *QuestionService) OperationQuestion(ctx context.Context, req *schema.Op
 		questionInfo.Pin = entity.QuestionPin
 	case schema.QuestionOperationUnPin:
 		questionInfo.Pin = entity.QuestionUnPin
+	case schema.QuestionOperationFeature:
+		questionInfo.Featured = entity.QuestionFeatured
+		questionInfo.FeaturedAt = time.Now().Unix()
+	case schema.QuestionOperationUnfeature:
+		questionInfo.Featured = entity.QuestionUnfeatured
+		questionInfo.FeaturedAt = 0
 	}
 
 	err = qs.questionRepo.UpdateQuestionOperation(ctx, questionInfo)
@@ -1128,6 +1135,9 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 		per.CanHide = false
 		per.CanPin = false
 	}
+	per.CanFeature = per.IsAdminModerator && question.Featured != entity.QuestionFeatured &&
+		question.Status != entity.QuestionStatusDeleted && question.Show == entity.QuestionShow
+	per.CanUnfeature = per.IsAdminModerator && question.Featured == entity.QuestionFeatured
 
 	if question.Status == entity.QuestionStatusDeleted {
 		operation := &schema.Operation{}
@@ -1146,6 +1156,7 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 	question.MemberActions = permission.GetQuestionPermission(ctx, userID, question.UserID, question.Status,
 		per.CanEdit, per.CanDelete,
 		per.CanClose, per.CanReopen, per.CanPin, per.CanHide, per.CanUnPin, per.CanShow,
+		per.CanFeature, per.CanUnfeature,
 		per.CanRecover)
 	question.ExtendsActions = permission.GetQuestionExtendsPermission(ctx, per.CanInviteOtherToAnswer)
 	return question, nil
@@ -1159,7 +1170,39 @@ func (qs *QuestionService) GetQuestionAndAddPV(ctx context.Context, questionID, 
 	if err != nil {
 		log.Error(err)
 	}
-	return qs.GetQuestion(ctx, questionID, loginUserID, per)
+	resp, err = qs.GetQuestion(ctx, questionID, loginUserID, per)
+	if err == nil && loginUserID != "" && resp != nil &&
+		resp.SectionID == entity.ForumSectionSiteAnnouncementsID {
+		if markErr := qs.questionRepo.MarkAnnouncementSeen(ctx, loginUserID, questionID); markErr != nil {
+			log.Errorf("mark announcement seen failed: %v", markErr)
+		}
+	}
+	return resp, err
+}
+
+// ClaimAnnouncementPopups claims unread site announcements for one user. A
+// claimed announcement will never be returned to the same user again.
+func (qs *QuestionService) ClaimAnnouncementPopups(ctx context.Context, userID string) (
+	items []*schema.AnnouncementPopupResp, err error) {
+	items = make([]*schema.AnnouncementPopupResp, 0)
+	questions, err := qs.questionRepo.ClaimUnseenAnnouncements(ctx, userID, 10)
+	if err != nil {
+		return nil, err
+	}
+	for _, question := range questions {
+		id := question.ID
+		if handler.GetEnableShortID(ctx) {
+			id = uid.EnShortID(id)
+		}
+		items = append(items, &schema.AnnouncementPopupResp{
+			ID:          id,
+			Title:       question.Title,
+			UrlTitle:    htmltext.UrlTitle(question.Title),
+			Description: htmltext.FetchExcerpt(question.ParsedText, "...", 240),
+			CreateTime:  question.CreatedAt.Unix(),
+		})
+	}
+	return items, nil
 }
 
 func (qs *QuestionService) InviteUserInfo(ctx context.Context, questionID string) (inviteList []*schema.UserBasicInfo, err error) {

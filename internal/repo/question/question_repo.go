@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -204,7 +205,8 @@ func (qr *questionRepo) RecoverQuestion(ctx context.Context, questionID string) 
 
 func (qr *questionRepo) UpdateQuestionOperation(ctx context.Context, question *entity.Question) (err error) {
 	question.ID = uid.DeShortID(question.ID)
-	_, err = qr.data.DB.Context(ctx).Where("id =?", question.ID).Cols("pin", "show").Update(question)
+	_, err = qr.data.DB.Context(ctx).Where("id =?", question.ID).
+		Cols("pin", "featured", "featured_at", "show").Update(question)
 	if err != nil {
 		return errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 	}
@@ -448,6 +450,9 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 		session.OrderBy("question.pin desc,question.created_at DESC")
 	case "frequent":
 		session.OrderBy("question.pin DESC, question.linked_count DESC, question.updated_at DESC")
+	case schema.QuestionOrderCondFeatured:
+		session.And("question.featured = ?", entity.QuestionFeatured)
+		session.OrderBy("question.featured_at DESC, question.created_at DESC")
 	}
 
 	session.GroupBy("question.id")
@@ -461,6 +466,92 @@ func (qr *questionRepo) GetQuestionPage(ctx context.Context, page, pageSize int,
 		}
 	}
 	return questionList, total, err
+}
+
+// ClaimUnseenAnnouncements returns visible site announcements that the user has
+// neither opened nor received in a popup, and records their delivery.
+func (qr *questionRepo) ClaimUnseenAnnouncements(ctx context.Context, userID string, limit int) (
+	questions []*entity.Question, err error) {
+	questions = make([]*entity.Question, 0)
+	if userID == "" {
+		return questions, nil
+	}
+	if limit < 1 || limit > 20 {
+		limit = 10
+	}
+
+	candidates := make([]*entity.Question, 0)
+	session := qr.data.DB.Context(ctx).
+		Select("question.*").
+		Join("LEFT", new(entity.AnnouncementReceipt),
+			"announcement_receipt.question_id = question.id AND announcement_receipt.user_id = ?", userID).
+		Where("question.section_id = ?", entity.ForumSectionSiteAnnouncementsID).
+		And("question.show = ?", entity.QuestionShow).
+		In("question.status", entity.QuestionStatusAvailable, entity.QuestionStatusClosed).
+		And("question.user_id <> ?", userID).
+		And("announcement_receipt.question_id IS NULL")
+
+	enabledAtConfig := &entity.Config{Key: constant.AnnouncementPopupEnabledAtConfigKey}
+	exists, configErr := qr.data.DB.Context(ctx).Get(enabledAtConfig)
+	if configErr != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(configErr).WithStack()
+	}
+	if exists {
+		enabledAt, parseErr := strconv.ParseInt(enabledAtConfig.Value, 10, 64)
+		if parseErr == nil && enabledAt > 0 {
+			session.And("question.created_at > ?", time.Unix(enabledAt, 0).UTC())
+		}
+	}
+
+	err = session.
+		Desc("question.created_at").
+		Limit(limit).
+		Find(&candidates)
+	if err != nil {
+		return nil, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
+	}
+
+	for _, question := range candidates {
+		claimed, claimErr := qr.insertAnnouncementReceipt(ctx, userID, question.ID)
+		if claimErr != nil {
+			return nil, claimErr
+		}
+		if claimed {
+			questions = append(questions, question)
+		}
+	}
+	return questions, nil
+}
+
+func (qr *questionRepo) MarkAnnouncementSeen(ctx context.Context, userID, questionID string) error {
+	if userID == "" || questionID == "" {
+		return nil
+	}
+	_, err := qr.insertAnnouncementReceipt(ctx, userID, uid.DeShortID(questionID))
+	return err
+}
+
+func (qr *questionRepo) insertAnnouncementReceipt(ctx context.Context, userID, questionID string) (bool, error) {
+	receipt := &entity.AnnouncementReceipt{
+		UserID:     userID,
+		QuestionID: questionID,
+		SeenAt:     time.Now(),
+	}
+	_, err := qr.data.DB.Context(ctx).Insert(receipt)
+	if err == nil {
+		return true, nil
+	}
+
+	// Concurrent tabs may try to claim the same announcement. The composite
+	// primary key makes one insert win; an existing receipt is not an error.
+	exists, existsErr := qr.data.DB.Context(ctx).
+		Where("user_id = ?", userID).
+		And("question_id = ?", receipt.QuestionID).
+		Exist(new(entity.AnnouncementReceipt))
+	if existsErr == nil && exists {
+		return false, nil
+	}
+	return false, errors.InternalServer(reason.DatabaseError).WithError(err).WithStack()
 }
 
 // GetRecommendQuestionPageByTags get recommend question page by tags

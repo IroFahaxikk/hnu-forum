@@ -17,12 +17,19 @@
  * under the License.
  */
 
-package constant
+package migrations
 
-const (
-	DeletedQuestionTitleTrKey           = "question.deleted_title"
-	QuestionsTitleTrKey                 = "question.questions_title"
-	TagsListTitleTrKey                  = "tag.tags_title"
-	TagHasNoDescription                 = "tag.no_description"
-	AnnouncementPopupEnabledAtConfigKey = "announcement.popup.enabled_at"
+import (
+	"context"
+	"fmt"
+
+	"github.com/apache/answer/internal/entity"
+	"xorm.io/xorm"
 )
+
+func addFeaturedQuestions(ctx context.Context, x *xorm.Engine) error {
+	if err := x.Context(ctx).Sync(new(entity.Question)); err != nil {
+		return fmt.Errorf("sync featured question fields failed: %w", err)
+	}
+	return nil
+}

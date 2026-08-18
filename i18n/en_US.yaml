@@ -52,6 +52,10 @@ backend:
       other: Unlist
     unpin:
       other: Unpin
+    feature:
+      other: Feature
+    unfeature:
+      other: Remove from featured
     show:
       other: List
     invite_someone_to_answer:
@@ -901,6 +905,9 @@ ui:
     answer: Answer
     question: Question
     badge_award: Badge
+  announcement_popup:
+    title: Site Announcements
+    description: "Here are the site announcements you have not read yet:"
   suspended:
     title: Your Account has been Suspended
     until_time: "Your account was suspended until {{ time }}."
@@ -1534,6 +1541,10 @@ ui:
       title: Pin this post
       content: Are you sure you wish to pinned globally? This post will appear at the top of all post lists.
       confirm_btn: Pin
+    feature:
+      title: Feature this post
+      content: Are you sure you want to add this post to featured posts?
+      confirm_btn: Feature
   delete:
     title: Delete this post
     question: >-
@@ -1663,6 +1674,7 @@ ui:
     save: Save
     follow_tag_tip: Follow tags to curate your list of questions.
     hot_questions: Hot Questions
+    featured_posts: Featured Posts
     all_questions: Campus posts
     x_questions: "{{ count }} Questions"
     x_answers: "{{ count }} answers"
@@ -2527,6 +2539,8 @@ ui:
     post_cancel_deleted: This post has been undeleted.
     post_pin: This post has been pinned.
     post_unpin: This post has been unpinned.
+    post_feature: This post has been featured.
+    post_unfeature: This post has been removed from featured posts.
     post_hide_list: This post has been hidden from list.
     post_show_list: This post has been shown to list.
     post_reopen: This post has been reopened.

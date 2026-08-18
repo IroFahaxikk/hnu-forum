@@ -89,6 +89,8 @@ type QuestionRepo interface {
 	RecoverQuestionLink(ctx context.Context, link ...*entity.QuestionLink) (err error)
 	UpdateQuestionLinkStatus(ctx context.Context, status int, links ...*entity.QuestionLink) (err error)
 	GetQuestionLink(ctx context.Context, page, pageSize int, questionID string, orderCond string, inDays int) (questions []*entity.Question, total int64, err error)
+	ClaimUnseenAnnouncements(ctx context.Context, userID string, limit int) (questions []*entity.Question, err error)
+	MarkAnnouncementSeen(ctx context.Context, userID, questionID string) (err error)
 }
 
 // QuestionCommon user service
@@ -396,8 +398,10 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 			AcceptedAnswerID: questionInfo.AcceptedAnswerID,
 			LastAnswerID:     questionInfo.LastAnswerID,
 			Pin:              questionInfo.Pin,
+			Featured:         questionInfo.Featured,
 			Show:             questionInfo.Show,
 			SectionID:        questionInfo.SectionID,
+			Author:           &schema.QuestionPageRespOperator{ID: questionInfo.UserID},
 			Operator:         &schema.QuestionPageRespOperator{ID: questionInfo.UserID},
 		}
 
@@ -463,18 +467,21 @@ func (qs *QuestionCommon) FormatQuestionsPage(
 		} else {
 			item.Tags = make([]*schema.TagResp, 0)
 		}
-		userInfo, ok := userInfoMap[item.Operator.ID]
-		if ok {
-			if userInfo != nil {
-				item.Operator.DisplayName = userInfo.DisplayName
-				item.Operator.Username = userInfo.Username
-				item.Operator.Rank = userInfo.Rank
-				item.Operator.Status = userInfo.Status
-				item.Operator.Avatar = userInfo.Avatar
-			}
-		}
+		fillQuestionPageRespOperator(item.Author, userInfoMap[item.Author.ID])
+		fillQuestionPageRespOperator(item.Operator, userInfoMap[item.Operator.ID])
 	}
 	return formattedQuestions, nil
+}
+
+func fillQuestionPageRespOperator(operator *schema.QuestionPageRespOperator, userInfo *schema.UserBasicInfo) {
+	if operator == nil || userInfo == nil {
+		return
+	}
+	operator.DisplayName = userInfo.DisplayName
+	operator.Username = userInfo.Username
+	operator.Rank = userInfo.Rank
+	operator.Status = userInfo.Status
+	operator.Avatar = userInfo.Avatar
 }
 
 func (qs *QuestionCommon) FormatQuestions(ctx context.Context, questionList []*entity.Question, loginUserID string) ([]*schema.QuestionInfoResp, error) {
@@ -682,6 +689,7 @@ func (qs *QuestionCommon) ShowFormat(ctx context.Context, data *entity.Question)
 	}
 	info.Status = data.Status
 	info.Pin = data.Pin
+	info.Featured = data.Featured
 	info.Show = data.Show
 	info.UserID = data.UserID
 	info.LastEditUserID = data.LastEditUserID

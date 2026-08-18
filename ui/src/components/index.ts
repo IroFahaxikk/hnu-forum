@@ -53,7 +53,7 @@ import TagsLoader from './TagsLoader';
 import WelcomeTitle from './WelcomeTitle';
 import Counts from './Counts';
 import QuestionList from './QuestionList';
-import HotQuestions from './HotQuestions';
+import FeaturedPosts from './FeaturedPosts';
 import HttpErrorContent from './HttpErrorContent';
 import CustomSidebar from './CustomSidebar';
 import ImgViewer from './ImgViewer';
@@ -69,6 +69,7 @@ import BubbleUser from './BubbleUser';
 import Sender from './Sender';
 import TabNav from './TabNav';
 import CampusSectionNav from './CampusSectionNav';
+import AnnouncementPopup from './AnnouncementPopup';
 
 export {
   Avatar,
@@ -109,7 +110,7 @@ export {
   WelcomeTitle,
   Counts,
   QuestionList,
-  HotQuestions,
+  FeaturedPosts,
   HttpErrorContent,
   CustomSidebar,
   ImgViewer,
@@ -125,5 +126,6 @@ export {
   Sender,
   TabNav,
   CampusSectionNav,
+  AnnouncementPopup,
 };
 export type { EditorRef, JSONSchema, UISchema };

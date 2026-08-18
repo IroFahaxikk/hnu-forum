@@ -111,6 +111,8 @@ var migrations = []Migration{
 	NewMigration("v2.0.2", "add reasoning content to ai conversation record", addAIConversationReasoningContent, false),
 	NewMigration("v2.0.3", "add require email verification login setting", addRequireEmailVerification, true),
 	NewMigration("v2.0.4", "add campus forum sections", addCampusForumSections, true),
+	NewMigration("v2.0.5", "add featured questions", addFeaturedQuestions, true),
+	NewMigration("v2.0.6", "add announcement popup receipts", addAnnouncementPopupReceipts, false),
 }
 
 func GetMigrations() []Migration {

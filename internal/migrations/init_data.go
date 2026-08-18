@@ -45,6 +45,7 @@ Sitemap: `
 var (
 	tables = []any{
 		&entity.Activity{},
+		&entity.AnnouncementReceipt{},
 		&entity.Answer{},
 		&entity.Collection{},
 		&entity.CollectionGroup{},

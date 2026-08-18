@@ -28,7 +28,7 @@ import * as Type from '@/common/interface';
 import {
   QuestionList,
   CustomSidebar,
-  HotQuestions,
+  FeaturedPosts,
   FollowingTags,
 } from '@/components';
 import { userCenter, floppyNavigation } from '@/utils';
@@ -125,7 +125,7 @@ const LinkedQuestions: FC = () => {
           </div>
         )}
         {loggedUser.access_token && <FollowingTags />}
-        <HotQuestions />
+        <FeaturedPosts />
       </Col>
     </Row>
   );

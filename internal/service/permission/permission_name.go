@@ -75,6 +75,8 @@ const (
 	reopenActionName                = "action.reopen"
 	pinActionName                   = "action.pin"
 	unpinActionName                 = "action.unpin"
+	featureActionName               = "action.feature"
+	unfeatureActionName             = "action.unfeature"
 	hideActionName                  = "action.hide"
 	showActionName                  = "action.show"
 	inviteSomeoneToAnswerActionName = "action.invite_someone_to_answer"

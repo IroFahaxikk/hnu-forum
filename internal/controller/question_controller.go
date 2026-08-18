@@ -119,7 +119,7 @@ func (qc *QuestionController) RemoveQuestion(ctx *gin.Context) {
 
 // OperationQuestion Operation question
 // @Summary Operation question
-// @Description Operation question \n operation [pin unpin hide show]
+// @Description Operation question \n operation [pin unpin hide show feature unfeature]
 // @Tags Question
 // @Accept json
 // @Produce json
@@ -134,6 +134,7 @@ func (qc *QuestionController) OperationQuestion(ctx *gin.Context) {
 	}
 	req.ID = uid.DeShortID(req.ID)
 	req.UserID = middleware.GetLoginUserIDFromContext(ctx)
+	req.IsAdminModerator = middleware.GetUserIsAdminModerator(ctx)
 	canList, err := qc.rankService.CheckOperationPermissions(ctx, req.UserID, []string{
 		permission.QuestionPin,
 		permission.QuestionUnPin,
@@ -154,8 +155,27 @@ func (qc *QuestionController) OperationQuestion(ctx *gin.Context) {
 		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
 		return
 	}
+	if (req.Operation == schema.QuestionOperationFeature || req.Operation == schema.QuestionOperationUnfeature) &&
+		!req.IsAdminModerator {
+		handler.HandleResponse(ctx, errors.Forbidden(reason.ForbiddenError), nil)
+		return
+	}
 	err = qc.questionService.OperationQuestion(ctx, req)
 	handler.HandleResponse(ctx, err, nil)
+}
+
+// ClaimAnnouncementPopups returns unread site announcements and records that
+// they have been delivered to the current user.
+// @Summary claim unread site announcement popups
+// @Tags Question
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} handler.RespBody{data=[]schema.AnnouncementPopupResp}
+// @Router /answer/api/v1/question/announcement/popup [post]
+func (qc *QuestionController) ClaimAnnouncementPopups(ctx *gin.Context) {
+	userID := middleware.GetLoginUserIDFromContext(ctx)
+	items, err := qc.questionService.ClaimAnnouncementPopups(ctx, userID)
+	handler.HandleResponse(ctx, err, items)
 }
 
 // CloseQuestion Close question

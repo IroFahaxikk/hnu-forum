@@ -21,24 +21,14 @@ package entity
 
 import "time"
 
-const (
-	ForumSectionStatusAvailable           = 1
-	ForumSectionSiteAnnouncementsID int64 = 501
-)
-
-// ForumSection is a fixed campus forum category. Only leaf sections accept posts.
-type ForumSection struct {
-	ID        int64     `xorm:"not null pk BIGINT(20) id"`
-	CreatedAt time.Time `xorm:"created TIMESTAMP created_at"`
-	UpdatedAt time.Time `xorm:"updated TIMESTAMP updated_at"`
-	ParentID  int64     `xorm:"not null default 0 BIGINT(20) INDEX parent_id"`
-	Slug      string    `xorm:"not null unique VARCHAR(50) slug"`
-	Name      string    `xorm:"not null VARCHAR(50) name"`
-	Sort      int       `xorm:"not null default 0 INT(11) sort"`
-	AdminOnly bool      `xorm:"not null default false BOOL admin_only"`
-	Status    int       `xorm:"not null default 1 INT(11) status"`
+// AnnouncementReceipt records that a user has either opened an announcement
+// or had it delivered in the announcement popup.
+type AnnouncementReceipt struct {
+	UserID     string    `xorm:"not null pk BIGINT(20) user_id"`
+	QuestionID string    `xorm:"not null pk BIGINT(20) question_id"`
+	SeenAt     time.Time `xorm:"not null default CURRENT_TIMESTAMP TIMESTAMP seen_at"`
 }
 
-func (ForumSection) TableName() string {
-	return "forum_section"
+func (AnnouncementReceipt) TableName() string {
+	return "announcement_receipt"
 }

@@ -246,6 +246,12 @@ const Index: FC<IProps> = ({
     if (params.operation === 'unpin') {
       msg = t('post_unpin', { keyPrefix: 'messages' });
     }
+    if (params.operation === 'feature') {
+      msg = t('post_feature', { keyPrefix: 'messages' });
+    }
+    if (params.operation === 'unfeature') {
+      msg = t('post_unfeature', { keyPrefix: 'messages' });
+    }
     if (params.operation === 'hide') {
       msg = t('post_hide_list', { keyPrefix: 'messages' });
     }
@@ -267,12 +273,14 @@ const Index: FC<IProps> = ({
       operation: action,
     };
 
-    if (action === 'pin') {
+    if (action === 'pin' || action === 'feature') {
+      const translationKey =
+        action === 'pin' ? 'question_detail.pin' : 'question_detail.feature';
       Modal.confirm({
-        title: t('title', { keyPrefix: 'question_detail.pin' }),
-        content: t('content', { keyPrefix: 'question_detail.pin' }),
+        title: t('title', { keyPrefix: translationKey }),
+        content: t('content', { keyPrefix: translationKey }),
         cancelBtnVariant: 'link',
-        confirmText: t('confirm_btn', { keyPrefix: 'question_detail.pin' }),
+        confirmText: t('confirm_btn', { keyPrefix: translationKey }),
         onConfirm: () => {
           handleCommon(params);
         },
@@ -309,6 +317,8 @@ const Index: FC<IProps> = ({
     if (
       action === 'pin' ||
       action === 'unpin' ||
+      action === 'feature' ||
+      action === 'unfeature' ||
       action === 'hide' ||
       action === 'show'
     ) {
@@ -331,6 +341,8 @@ const Index: FC<IProps> = ({
         v.action === 'reopen' ||
         v.action === 'pin' ||
         v.action === 'unpin' ||
+        v.action === 'feature' ||
+        v.action === 'unfeature' ||
         v.action === 'hide' ||
         v.action === 'show',
     ) || [];

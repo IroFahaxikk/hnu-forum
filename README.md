@@ -43,6 +43,12 @@ docker run -d -p 9080:80 -v answer-data:/data --name answer apache/answer:2.0.2
 
 更多安装方式请参考 [Apache Answer 安装文档](https://answer.apache.org/docs/installation)。
 
+## 生产部署与更新
+
+生产环境使用 GitHub Actions 构建的 GHCR 镜像和独立的 Docker Compose 配置。服务器更新、数据备份、运行状态检查、应用回滚及误用根目录 Compose 后的恢复方法，请参阅 [生产服务器更新手册](deploy/production/README.md)。
+
+> 请勿在生产服务器的仓库根目录直接运行 `docker compose`。生产环境必须使用 `deploy/production/docker-compose.yml` 和对应的 `.env` 文件。
+
 ## 从源码构建
 
 ### 环境要求

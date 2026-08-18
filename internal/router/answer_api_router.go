@@ -286,6 +286,7 @@ func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
 	r.PUT("/question/reopen", a.questionController.ReopenQuestion)
 	r.GET("/question/similar", a.questionController.GetSimilarQuestions)
 	r.POST("/question/recover", a.questionController.QuestionRecover)
+	r.POST("/question/announcement/popup", a.questionController.ClaimAnnouncementPopups)
 
 	// answer
 	r.POST("/answer", a.answerController.AddAnswer)
