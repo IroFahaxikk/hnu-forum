@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://www.dongpolakeside.com">
-    <img alt="Apache Answer Logo" src="docs/img/logo.svg" height="99px">
+    <img alt="东坡湖畔" src="docs/img/logo.svg" height="99px">
   </a>
 
   # 东坡湖畔
@@ -33,19 +33,27 @@
 
 上游项目文档：[answer.apache.org](https://answer.apache.org)
 
-## 本地运行
+## 本地开发
 
-### 使用 Docker
+本项目不使用上游 `apache/answer` 镜像进行本地开发。准备好
+`answer-data/conf/config.yaml` 中的本地 MySQL 配置后，启动后端：
 
 ```bash
-docker run -d -p 9080:80 -v answer-data:/data --name answer apache/answer:2.0.2
+CACHE_TYPE=memory go run ./cmd/answer upgrade -C "$PWD/answer-data"
+CACHE_TYPE=memory go run ./cmd/answer run -C "$PWD/answer-data"
 ```
 
-更多安装方式请参考 [Apache Answer 安装文档](https://answer.apache.org/docs/installation)。
+在另一个终端启动前端：
+
+```bash
+cd ui
+pnpm install
+pnpm start
+```
 
 ## 生产部署与更新
 
-生产环境使用 GitHub Actions 构建的 GHCR 镜像和独立的 Docker Compose 配置。服务器更新、数据备份、运行状态检查、应用回滚及误用根目录 Compose 后的恢复方法，请参阅 [生产服务器更新手册](deploy/production/README.md)。
+生产环境使用 GitHub Actions 构建的 GHCR 镜像和独立的 Docker Compose 配置。服务器更新、数据备份、运行状态检查和应用回滚方法，请参阅 [生产服务器更新手册](deploy/production/README.md)。
 
 > 请勿在生产服务器的仓库根目录直接运行 `docker compose`。生产环境必须使用 `deploy/production/docker-compose.yml` 和对应的 `.env` 文件。
 

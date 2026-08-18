@@ -16,7 +16,3 @@
 # under the License.
 
 blank_issues_enabled: true
-contact_links:
-  - name: Questions & Discussions
-    url: https://meta.answer.dev
-    about: If you have any questions while using.

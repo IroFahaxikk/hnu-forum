@@ -15,9 +15,7 @@
 
 ## 重要警告
 
-不要在 `/opt/hnu-forum` 仓库根目录直接执行 `docker compose up`、`docker compose pull` 或 `docker compose stop`。
-
-仓库根目录的 `docker-compose.yaml` 是上游 Apache Answer 的本地运行配置，使用 `apache/answer` 镜像和名为 `answer-data` 的 Docker 卷。生产配置则使用本项目的 GHCR 镜像，并将 `/srv/hnu-forum/answer` 挂载到容器的 `/data`。使用错误配置会让网站读取另一份数据，从而表现为网站回到初始状态。
+不要在 `/opt/hnu-forum` 仓库根目录直接执行 `docker compose up`、`docker compose pull` 或 `docker compose stop`。仓库不再保留上游的根目录 Compose 配置，生产环境只使用 `deploy/production/docker-compose.yml`。
 
 生产环境的所有 Compose 命令都应当在 `/opt/hnu-forum/deploy/production` 目录执行，并显式指定环境文件和配置文件：
 
@@ -125,7 +123,7 @@ docker inspect hnu-forum-answer-1 \
 挂载=/srv/hnu-forum/answer -> /data
 ```
 
-如果镜像显示为 `apache/answer`，或 `/data` 来自 `/var/lib/docker/volumes/...answer-data/_data`，说明使用了错误的 Compose 配置。此时应立即停止 `answer`，并按“误用根目录 Compose 的恢复流程”处理。
+如果镜像不是 `ghcr.io/irofahaxikk/hnu-forum:production`，或者挂载不是 `/srv/hnu-forum/answer -> /data`，应立即停止更新并检查执行目录和 Compose 参数。
 
 ### 6. 检查日志和服务
 
@@ -181,49 +179,6 @@ IMAGE_TAG="sha-${PREVIOUS_REVISION}" \
 回滚后重新执行容器状态、数据挂载、日志和网页检查。
 
 应用镜像回滚不会自动回滚数据库。如果新版本已经执行数据库结构迁移，不要直接覆盖或导入数据库，应先停止 `answer`，保留现场并根据具体迁移内容制定恢复方案。
-
-## 误用根目录 Compose 的恢复流程
-
-如果在 `/opt/hnu-forum` 根目录执行了 `docker compose up -d answer`，网站可能会使用 `apache/answer` 和错误的 `answer-data` 卷。该现象通常不代表生产数据已被删除。
-
-### 1. 停止错误容器
-
-```bash
-cd /opt/hnu-forum
-docker compose stop answer
-```
-
-不要执行 `down -v`。
-
-### 2. 确认生产数据配置仍然存在
-
-```bash
-test -s /srv/hnu-forum/answer/conf/config.yaml \
-  && echo "生产配置存在" \
-  || echo "未找到生产配置，停止操作并排查数据目录"
-```
-
-### 3. 使用生产配置恢复容器
-
-只有在上一步显示“生产配置存在”时才执行：
-
-```bash
-cd /opt/hnu-forum/deploy/production
-docker compose --env-file .env -f docker-compose.yml up -d --no-deps answer
-```
-
-### 4. 核验恢复结果
-
-```bash
-docker compose --env-file .env -f docker-compose.yml ps
-
-docker inspect hnu-forum-answer-1 \
-  --format '镜像={{.Config.Image}}{{println}}{{range .Mounts}}挂载={{.Source}} -> {{.Destination}}{{println}}{{end}}'
-
-docker compose --env-file .env -f docker-compose.yml logs --tail=100 answer
-```
-
-确认镜像为 `ghcr.io/irofahaxikk/hnu-forum`，且挂载为 `/srv/hnu-forum/answer -> /data`。
 
 ## 常用只读检查
 
