@@ -9129,8 +9129,7 @@ const docTemplate = `{
                 "original_text": {
                     "description": "original comment content",
                     "type": "string",
-                    "maxLength": 600,
-                    "minLength": 2
+                    "maxLength": 600
                 },
                 "reply_comment_id": {
                     "description": "reply comment id",
@@ -9299,8 +9298,7 @@ const docTemplate = `{
                 },
                 "content": {
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 6
+                    "maxLength": 65535
                 },
                 "question_id": {
                     "type": "string"
@@ -9375,8 +9373,7 @@ const docTemplate = `{
                 },
                 "content": {
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 6
+                    "maxLength": 65535
                 },
                 "edit_summary": {
                     "type": "string"
@@ -11194,6 +11191,7 @@ const docTemplate = `{
         "schema.QuestionAdd": {
             "type": "object",
             "required": [
+                "content",
                 "section_id",
                 "title"
             ],
@@ -11208,8 +11206,7 @@ const docTemplate = `{
                 "content": {
                     "description": "content",
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 0
+                    "maxLength": 65535
                 },
                 "section_id": {
                     "description": "campus forum section (leaf section only)",
@@ -11226,8 +11223,7 @@ const docTemplate = `{
                 "title": {
                     "description": "question title",
                     "type": "string",
-                    "maxLength": 150,
-                    "minLength": 6
+                    "maxLength": 150
                 }
             }
         },
@@ -11235,14 +11231,14 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "answer_content",
+                "content",
                 "section_id",
                 "title"
             ],
             "properties": {
                 "answer_content": {
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 6
+                    "maxLength": 65535
                 },
                 "captcha_code": {
                     "type": "string"
@@ -11254,8 +11250,7 @@ const docTemplate = `{
                 "content": {
                     "description": "content",
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 0
+                    "maxLength": 65535
                 },
                 "mention_username_list": {
                     "type": "array",
@@ -11277,8 +11272,7 @@ const docTemplate = `{
                 "title": {
                     "description": "question title",
                     "type": "string",
-                    "maxLength": 150,
-                    "minLength": 6
+                    "maxLength": 150
                 }
             }
         },
@@ -11566,6 +11560,7 @@ const docTemplate = `{
         "schema.QuestionUpdate": {
             "type": "object",
             "required": [
+                "content",
                 "id",
                 "title"
             ],
@@ -11580,8 +11575,7 @@ const docTemplate = `{
                 "content": {
                     "description": "content",
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 0
+                    "maxLength": 65535
                 },
                 "edit_summary": {
                     "description": "edit summary",
@@ -11607,8 +11601,7 @@ const docTemplate = `{
                 "title": {
                     "description": "question title",
                     "type": "string",
-                    "maxLength": 150,
-                    "minLength": 6
+                    "maxLength": 150
                 }
             }
         },
@@ -11799,8 +11792,7 @@ const docTemplate = `{
                 },
                 "content": {
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 6
+                    "maxLength": 65535
                 },
                 "flag_id": {
                     "type": "string"
@@ -11823,8 +11815,7 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string",
-                    "maxLength": 150,
-                    "minLength": 6
+                    "maxLength": 150
                 }
             }
         },
@@ -12446,6 +12437,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "min_content": {
+                    "description": "MinimumContent is retained for historical migration compatibility.\nPost content validation only requires non-blank text.",
                     "type": "integer",
                     "maximum": 65535,
                     "minimum": 0
@@ -12464,6 +12456,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "min_content": {
+                    "description": "MinimumContent is retained for historical migration compatibility.\nPost content validation only requires non-blank text.",
                     "type": "integer",
                     "maximum": 65535,
                     "minimum": 0
@@ -12970,8 +12963,7 @@ const docTemplate = `{
                 "original_text": {
                     "description": "original comment content",
                     "type": "string",
-                    "maxLength": 600,
-                    "minLength": 2
+                    "maxLength": 600
                 }
             }
         },

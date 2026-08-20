@@ -9121,8 +9121,7 @@
                 "original_text": {
                     "description": "original comment content",
                     "type": "string",
-                    "maxLength": 600,
-                    "minLength": 2
+                    "maxLength": 600
                 },
                 "reply_comment_id": {
                     "description": "reply comment id",
@@ -9291,8 +9290,7 @@
                 },
                 "content": {
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 6
+                    "maxLength": 65535
                 },
                 "question_id": {
                     "type": "string"
@@ -9367,8 +9365,7 @@
                 },
                 "content": {
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 6
+                    "maxLength": 65535
                 },
                 "edit_summary": {
                     "type": "string"
@@ -11186,6 +11183,7 @@
         "schema.QuestionAdd": {
             "type": "object",
             "required": [
+                "content",
                 "section_id",
                 "title"
             ],
@@ -11200,8 +11198,7 @@
                 "content": {
                     "description": "content",
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 0
+                    "maxLength": 65535
                 },
                 "section_id": {
                     "description": "campus forum section (leaf section only)",
@@ -11218,8 +11215,7 @@
                 "title": {
                     "description": "question title",
                     "type": "string",
-                    "maxLength": 150,
-                    "minLength": 6
+                    "maxLength": 150
                 }
             }
         },
@@ -11227,14 +11223,14 @@
             "type": "object",
             "required": [
                 "answer_content",
+                "content",
                 "section_id",
                 "title"
             ],
             "properties": {
                 "answer_content": {
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 6
+                    "maxLength": 65535
                 },
                 "captcha_code": {
                     "type": "string"
@@ -11246,8 +11242,7 @@
                 "content": {
                     "description": "content",
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 0
+                    "maxLength": 65535
                 },
                 "mention_username_list": {
                     "type": "array",
@@ -11269,8 +11264,7 @@
                 "title": {
                     "description": "question title",
                     "type": "string",
-                    "maxLength": 150,
-                    "minLength": 6
+                    "maxLength": 150
                 }
             }
         },
@@ -11558,6 +11552,7 @@
         "schema.QuestionUpdate": {
             "type": "object",
             "required": [
+                "content",
                 "id",
                 "title"
             ],
@@ -11572,8 +11567,7 @@
                 "content": {
                     "description": "content",
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 0
+                    "maxLength": 65535
                 },
                 "edit_summary": {
                     "description": "edit summary",
@@ -11599,8 +11593,7 @@
                 "title": {
                     "description": "question title",
                     "type": "string",
-                    "maxLength": 150,
-                    "minLength": 6
+                    "maxLength": 150
                 }
             }
         },
@@ -11791,8 +11784,7 @@
                 },
                 "content": {
                     "type": "string",
-                    "maxLength": 65535,
-                    "minLength": 6
+                    "maxLength": 65535
                 },
                 "flag_id": {
                     "type": "string"
@@ -11815,8 +11807,7 @@
                 },
                 "title": {
                     "type": "string",
-                    "maxLength": 150,
-                    "minLength": 6
+                    "maxLength": 150
                 }
             }
         },
@@ -12438,6 +12429,7 @@
             "type": "object",
             "properties": {
                 "min_content": {
+                    "description": "MinimumContent is retained for historical migration compatibility.\nPost content validation only requires non-blank text.",
                     "type": "integer",
                     "maximum": 65535,
                     "minimum": 0
@@ -12456,6 +12448,7 @@
             "type": "object",
             "properties": {
                 "min_content": {
+                    "description": "MinimumContent is retained for historical migration compatibility.\nPost content validation only requires non-blank text.",
                     "type": "integer",
                     "maximum": 65535,
                     "minimum": 0
@@ -12962,8 +12955,7 @@
                 "original_text": {
                     "description": "original comment content",
                     "type": "string",
-                    "maxLength": 600,
-                    "minLength": 2
+                    "maxLength": 600
                 }
             }
         },

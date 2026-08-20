@@ -348,7 +348,6 @@ definitions:
       original_text:
         description: original comment content
         maxLength: 600
-        minLength: 2
         type: string
       reply_comment_id:
         description: reply comment id
@@ -470,7 +469,6 @@ definitions:
         type: string
       content:
         maxLength: 65535
-        minLength: 6
         type: string
       question_id:
         type: string
@@ -521,7 +519,6 @@ definitions:
         type: string
       content:
         maxLength: 65535
-        minLength: 6
         type: string
       edit_summary:
         type: string
@@ -1792,7 +1789,6 @@ definitions:
       content:
         description: content
         maxLength: 65535
-        minLength: 0
         type: string
       section_id:
         description: campus forum section (leaf section only)
@@ -1806,9 +1802,9 @@ definitions:
       title:
         description: question title
         maxLength: 150
-        minLength: 6
         type: string
     required:
+    - content
     - section_id
     - title
     type: object
@@ -1816,7 +1812,6 @@ definitions:
     properties:
       answer_content:
         maxLength: 65535
-        minLength: 6
         type: string
       captcha_code:
         type: string
@@ -1826,7 +1821,6 @@ definitions:
       content:
         description: content
         maxLength: 65535
-        minLength: 0
         type: string
       mention_username_list:
         items:
@@ -1843,10 +1837,10 @@ definitions:
       title:
         description: question title
         maxLength: 150
-        minLength: 6
         type: string
     required:
     - answer_content
+    - content
     - section_id
     - title
     type: object
@@ -2051,7 +2045,6 @@ definitions:
       content:
         description: content
         maxLength: 65535
-        minLength: 0
         type: string
       edit_summary:
         description: edit summary
@@ -2071,9 +2064,9 @@ definitions:
       title:
         description: question title
         maxLength: 150
-        minLength: 6
         type: string
     required:
+    - content
     - id
     - title
     type: object
@@ -2199,7 +2192,6 @@ definitions:
         type: integer
       content:
         maxLength: 65535
-        minLength: 6
         type: string
       flag_id:
         type: string
@@ -2217,7 +2209,6 @@ definitions:
         type: array
       title:
         maxLength: 150
-        minLength: 6
         type: string
     required:
     - flag_id
@@ -2641,6 +2632,9 @@ definitions:
   schema.SiteQuestionsReq:
     properties:
       min_content:
+        description: |-
+          MinimumContent is retained for historical migration compatibility.
+          Post content validation only requires non-blank text.
         maximum: 65535
         minimum: 0
         type: integer
@@ -2654,6 +2648,9 @@ definitions:
   schema.SiteQuestionsResp:
     properties:
       min_content:
+        description: |-
+          MinimumContent is retained for historical migration compatibility.
+          Post content validation only requires non-blank text.
         maximum: 65535
         minimum: 0
         type: integer
@@ -2995,7 +2992,6 @@ definitions:
       original_text:
         description: original comment content
         maxLength: 600
-        minLength: 2
         type: string
     required:
     - comment_id
