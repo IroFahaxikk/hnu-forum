@@ -80,9 +80,9 @@ type ReopenQuestionReq struct {
 
 type QuestionAdd struct {
 	// question title
-	Title string `validate:"required,notblank,gte=6,lte=150" json:"title"`
+	Title string `validate:"required,notblank,lte=150" json:"title"`
 	// content
-	Content string `validate:"gte=0,lte=65535" json:"content"`
+	Content string `validate:"required,notblank,lte=65535" json:"content"`
 	// html
 	HTML string `json:"-"`
 	// tags
@@ -110,12 +110,12 @@ func (req *QuestionAdd) Check() (errFields []*validator.FormErrorField, err erro
 
 type QuestionAddByAnswer struct {
 	// question title
-	Title string `validate:"required,notblank,gte=6,lte=150" json:"title"`
+	Title string `validate:"required,notblank,lte=150" json:"title"`
 	// content
-	Content string `validate:"gte=0,lte=65535" json:"content"`
+	Content string `validate:"required,notblank,lte=65535" json:"content"`
 	// html
 	HTML          string `json:"-"`
-	AnswerContent string `validate:"required,notblank,gte=6,lte=65535" json:"answer_content"`
+	AnswerContent string `validate:"required,notblank,lte=65535" json:"answer_content"`
 	AnswerHTML    string `json:"-"`
 	// tags
 	Tags      []*TagItem `validate:"dive" json:"tags"`
@@ -190,9 +190,9 @@ type QuestionUpdate struct {
 	// question id
 	ID string `validate:"required" json:"id"`
 	// question title
-	Title string `validate:"required,notblank,gte=6,lte=150" json:"title"`
+	Title string `validate:"required,notblank,lte=150" json:"title"`
 	// content
-	Content string `validate:"gte=0,lte=65535" json:"content"`
+	Content string `validate:"required,notblank,lte=65535" json:"content"`
 	// html
 	HTML       string   `json:"-"`
 	InviteUser []string `validate:"omitempty"  json:"invite_user"`

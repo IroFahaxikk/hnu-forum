@@ -109,7 +109,9 @@ type SiteWriteResp SiteWriteReq
 
 // SiteQuestionsReq site questions settings request
 type SiteQuestionsReq struct {
-	MinimumTags    int  `validate:"omitempty,gte=0,lte=5" json:"min_tags"`
+	MinimumTags int `validate:"omitempty,gte=0,lte=5" json:"min_tags"`
+	// MinimumContent is retained for historical migration compatibility.
+	// Post content validation only requires non-blank text.
 	MinimumContent int  `validate:"omitempty,gte=0,lte=65535" json:"min_content"`
 	RestrictAnswer bool `validate:"omitempty" json:"restrict_answer"`
 }

@@ -51,11 +51,6 @@ const QaSettings = () => {
         description: t('min_tags.text'),
         default: 0,
       },
-      min_content: {
-        type: 'number',
-        title: t('min_content.label'),
-        description: t('min_content.text'),
-      },
       restrict_answer: {
         type: 'boolean',
         title: t('restrict_answer.label'),
@@ -65,12 +60,6 @@ const QaSettings = () => {
   };
   const uiSchema: UISchema = {
     min_tags: {
-      'ui:widget': 'input',
-      'ui:options': {
-        inputType: 'number',
-      },
-    },
-    min_content: {
       'ui:widget': 'input',
       'ui:options': {
         inputType: 'number',
@@ -97,7 +86,6 @@ const QaSettings = () => {
     // TODO: submit data
     const reqParams: Type.AdminQuestionSetting = {
       min_tags: formData.min_tags.value,
-      min_content: formData.min_content.value,
       restrict_answer: formData.restrict_answer.value,
     };
     updateQuestionSetting(reqParams)
@@ -123,7 +111,6 @@ const QaSettings = () => {
       if (res) {
         const formMeta = { ...formData };
         formMeta.min_tags.value = res.min_tags;
-        formMeta.min_content.value = res.min_content;
         formMeta.restrict_answer.value = res.restrict_answer;
         console.log('res', res, formMeta);
         setFormData(formMeta);

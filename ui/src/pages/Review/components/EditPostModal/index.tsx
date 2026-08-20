@@ -116,7 +116,7 @@ const Index: FC<Props> = ({
     let bol = true;
     const { title, tags, content } = formData;
     if (objectType === 'question') {
-      if (!title.value) {
+      if (!title.value.trim()) {
         bol = false;
         formData.title = {
           value: title.value,
@@ -139,14 +139,12 @@ const Index: FC<Props> = ({
       }
     }
 
-    if (!content.value || Array.from(content.value.trim()).length < 6) {
+    if (!content.value.trim()) {
       bol = false;
       formData.content = {
         value: content.value,
         isInvalid: true,
-        errorMsg: t('form.fields.answer.feedback.characters', {
-          keyPrefix: 'edit_answer',
-        }),
+        errorMsg: t('form.fields.body.msg.empty'),
       };
     } else {
       formData.content = {

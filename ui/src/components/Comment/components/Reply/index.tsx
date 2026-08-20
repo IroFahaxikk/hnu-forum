@@ -38,11 +38,16 @@ const Index = ({ userName, onSendReply, onCancel, mode }) => {
 
   const handleChange = (e) => {
     setValue(e.target.value);
+    setValidationErrorMsg('');
   };
   const handleSelected = (val) => {
     setValue(val);
   };
   const handleSendReply = () => {
+    if (!value.trim()) {
+      setValidationErrorMsg(t('empty'));
+      return;
+    }
     onSendReply(value).catch((ex) => {
       if (ex.isError) {
         setValidationErrorMsg(ex.msg);

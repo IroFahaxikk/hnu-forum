@@ -325,7 +325,6 @@ func (m *Mentor) initSiteInfoAdvanced() {
 func (m *Mentor) initSiteInfoQuestions() {
 	questionsData := map[string]any{
 		"min_tags":        1,
-		"min_content":     6,
 		"restrict_answer": true,
 	}
 	questionsDataBytes, _ := json.Marshal(questionsData)

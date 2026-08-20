@@ -17,6 +17,7 @@
 /go.work*
 /logs
 /ui/node_modules
+/.pnpm-store/
 /ui/build/*/*/*
 /ui/build/*.json
 /ui/build/*.html

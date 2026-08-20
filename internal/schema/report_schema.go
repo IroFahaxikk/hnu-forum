@@ -107,8 +107,8 @@ type ReviewReportReq struct {
 	OperationType string     `validate:"required,oneof=edit_post close_post delete_post unlist_post ignore_report" json:"operation_type"`
 	CloseType     int        `validate:"omitempty" json:"close_type"`
 	CloseMsg      string     `validate:"omitempty" json:"close_msg"`
-	Title         string     `validate:"omitempty,notblank,gte=6,lte=150" json:"title"`
-	Content       string     `validate:"omitempty,notblank,gte=6,lte=65535" json:"content"`
+	Title         string     `validate:"omitempty,notblank,lte=150" json:"title"`
+	Content       string     `validate:"omitempty,notblank,lte=65535" json:"content"`
 	Tags          []*TagItem `validate:"omitempty,dive" json:"tags"`
 	UserID        string     `json:"-"`
 	IsAdmin       bool       `json:"-"`

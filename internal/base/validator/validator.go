@@ -123,11 +123,7 @@ func NotBlank(fl validator.FieldLevel) (res bool) {
 	switch field.Kind() {
 	case reflect.String:
 		trimSpace := strings.TrimSpace(field.String())
-		res := len(trimSpace) > 0
-		if !res {
-			field.SetString(trimSpace)
-		}
-		return true
+		return len(trimSpace) > 0
 	case reflect.Chan, reflect.Map, reflect.Slice, reflect.Array:
 		return field.Len() > 0
 	case reflect.Ptr, reflect.Interface, reflect.Func:

@@ -914,7 +914,6 @@ export interface VoteConversationParams {
 
 export interface AdminQuestionSetting {
   min_tags: number;
-  min_content: number;
   restrict_answer: boolean;
 }
 

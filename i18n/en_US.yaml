@@ -1131,6 +1131,7 @@ ui:
     unreact_emoji: unreact with {{ emoji }}
   comment:
     btn_add_comment: Add reply
+    empty: Reply content cannot be empty.
     reply_to: Reply to
     btn_reply: Reply
     btn_edit: Edit
@@ -1210,6 +1211,7 @@ ui:
             empty: Body cannot be empty.
           hint:
             optional_body: Describe what the question is about.
+            required_body: Enter the post content; it cannot be empty.
             minimum_characters: "Describe what the question is about, at least {{min_content_length}} characters are required."
         tags:
           label: Tags (optional)

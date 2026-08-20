@@ -132,12 +132,12 @@ const Index = () => {
     let bol = true;
     const { content } = formData;
 
-    if (!content.value || Array.from(content.value.trim()).length < 6) {
+    if (!content.value.trim()) {
       bol = false;
       formData.content = {
         value: content.value,
         isInvalid: true,
-        errorMsg: t('form.fields.answer.feedback.characters'),
+        errorMsg: t('form.fields.body.msg.empty', { keyPrefix: 'ask' }),
       };
     } else {
       formData.content = {

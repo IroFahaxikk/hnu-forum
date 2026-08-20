@@ -1115,6 +1115,7 @@ ui:
     unreact_emoji: 撤销 {{ emoji }}
   comment:
     btn_add_comment: 添加回复
+    empty: 回复内容不能为空。
     reply_to: 回复
     btn_reply: 回复
     btn_edit: 编辑
@@ -1192,6 +1193,7 @@ ui:
             empty: 内容不能为空。
           hint:
             optional_body: 描述这个问题是什么。
+            required_body: 填写帖子内容，不能为空。
             minimum_characters: "详细描述这个问题，至少需要 {{min_content_length}} 字符。"
         tags:
           label: 标签（选填）

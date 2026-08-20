@@ -116,12 +116,12 @@ const Index: FC<Props> = ({ visible = false, data, callback }) => {
     let bol = true;
     const { content } = formData;
 
-    if (!content.value || Array.from(content.value.trim()).length < 6) {
+    if (!content.value.trim()) {
       bol = false;
       formData.content = {
         value: content.value,
         isInvalid: true,
-        errorMsg: t('characters'),
+        errorMsg: t('empty'),
       };
     } else {
       formData.content = {

@@ -920,11 +920,3 @@ func (qs *QuestionCommon) tryToGetQuestionIDFromMsg(ctx context.Context, closeMs
 	questionID = uid.DeShortID(questionID)
 	return questionID
 }
-
-func (qs *QuestionCommon) GetMinimumContentLength(ctx context.Context) (int, error) {
-	siteInfo, err := qs.siteInfoService.GetSiteQuestion(ctx)
-	if err != nil {
-		return 6, err
-	}
-	return siteInfo.MinimumContent, nil
-}

@@ -28,7 +28,7 @@ import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
 import fm from 'front-matter';
 
-import { writeSettingStore, loggedUserInfoStore } from '@/stores';
+import { loggedUserInfoStore } from '@/stores';
 import { usePageTags, usePromptWithUnload } from '@/hooks';
 import { Editor, EditorRef, TagSelector } from '@/components';
 import type * as Type from '@/common/interface';
@@ -128,7 +128,6 @@ const Ask = () => {
       handleTagsChange(resp);
     });
   };
-  const writeInfo = writeSettingStore((state) => state.write);
   const { user: loggedUser } = loggedUserInfoStore();
   const { data: forumSections } = useForumSections();
 
@@ -419,6 +418,41 @@ const Ask = () => {
       return;
     }
 
+    const firstEmptyField = [
+      !formData.title.value.trim() ? 'title' : '',
+      !formData.content.value.trim() ? 'content' : '',
+      checked && !formData.answer_content.value.trim() ? 'answer' : '',
+    ].find(Boolean);
+    if (firstEmptyField) {
+      setFormData({
+        ...formData,
+        title: {
+          ...formData.title,
+          isInvalid: !formData.title.value.trim(),
+          errorMsg: !formData.title.value.trim()
+            ? t('form.fields.title.msg.empty')
+            : '',
+        },
+        content: {
+          ...formData.content,
+          isInvalid: !formData.content.value.trim(),
+          errorMsg: !formData.content.value.trim()
+            ? t('form.fields.body.msg.empty')
+            : '',
+        },
+        answer_content: {
+          ...formData.answer_content,
+          isInvalid: checked && !formData.answer_content.value.trim(),
+          errorMsg:
+            checked && !formData.answer_content.value.trim()
+              ? t('empty', { keyPrefix: 'question_detail.write_answer' })
+              : '',
+        },
+      });
+      scrollToElementTop(document.getElementById(firstEmptyField));
+      return;
+    }
+
     const params: Type.QuestionParams = {
       title: formData.title.value,
       content: formData.content.value,
@@ -463,17 +497,7 @@ const Ask = () => {
   });
 
   const handleContentHint = () => {
-    if (
-      !writeInfo ||
-      writeInfo.min_content === undefined ||
-      !writeInfo.min_content
-    ) {
-      return t(`form.fields.body.hint.optional_body`);
-    }
-
-    return t(`form.fields.body.hint.minimum_characters`, {
-      min_content_length: writeInfo.min_content,
-    });
+    return t('form.fields.body.hint.required_body');
   };
 
   return (
