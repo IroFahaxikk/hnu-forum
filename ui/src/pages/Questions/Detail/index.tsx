@@ -165,6 +165,11 @@ const Index = () => {
           },
         ]);
         setQuestion(res);
+        if (res.preview_only) {
+          setAnswers({ count: 0, list: [] });
+        } else {
+          requestAnswers();
+        }
       }
       setIsLoading(false);
     } catch (e) {
@@ -186,6 +191,7 @@ const Index = () => {
     }
     if (type === 'delete_answer') {
       getDetail();
+      return;
     }
     requestAnswers();
   };
@@ -212,11 +218,10 @@ const Index = () => {
       return;
     }
     getDetail();
-    requestAnswers();
   }, [qid]);
 
   useEffect(() => {
-    if (page || order) {
+    if ((page || order) && question && !question.preview_only) {
       requestAnswers();
     }
   }, [page, order]);
@@ -242,7 +247,7 @@ const Index = () => {
             isLogged={isLogged}
           />
         )}
-        {!isLoading && answers.count > 0 && (
+        {!question?.preview_only && !isLoading && answers.count > 0 && (
           <>
             <AnswerHead count={answers.count} order={order} />
             {answers?.list?.map((item) => {
@@ -260,17 +265,20 @@ const Index = () => {
           </>
         )}
 
-        {!isLoading && Math.ceil(answers.count / 15) > 1 && (
-          <div className="d-flex justify-content-center answer-item pt-4">
-            <Pagination
-              currentPage={Number(page || 1)}
-              pageSize={15}
-              totalSize={answers?.count || 0}
-            />
-          </div>
-        )}
+        {!question?.preview_only &&
+          !isLoading &&
+          Math.ceil(answers.count / 15) > 1 && (
+            <div className="d-flex justify-content-center answer-item pt-4">
+              <Pagination
+                currentPage={Number(page || 1)}
+                pageSize={15}
+                totalSize={answers?.count || 0}
+              />
+            </div>
+          )}
 
-        {!isLoading &&
+        {!question?.preview_only &&
+          !isLoading &&
           Number(question?.status) !== 2 &&
           !question?.operation?.type && (
             <WriteAnswer

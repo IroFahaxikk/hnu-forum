@@ -276,6 +276,7 @@ type QuestionInfoResp struct {
 	Collected            bool           `json:"collected"`
 	VoteStatus           string         `json:"vote_status"`
 	IsFollowed           bool           `json:"is_followed"`
+	PreviewOnly          bool           `json:"preview_only"`
 
 	// MemberActions
 	MemberActions  []*PermissionMemberAction `json:"member_actions"`

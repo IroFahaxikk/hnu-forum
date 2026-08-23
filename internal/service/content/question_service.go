@@ -1113,6 +1113,9 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 	}
 
 	question.Description = htmltext.FetchExcerpt(question.HTML, "...", 240)
+	if userID == "" {
+		applyGuestQuestionPreview(question)
+	}
 	question.MemberActions = permission.GetQuestionPermission(ctx, userID, question.UserID, question.Status,
 		per.CanEdit, per.CanDelete,
 		per.CanClose, per.CanReopen, per.CanPin, per.CanHide, per.CanUnPin, per.CanShow,
@@ -1120,6 +1123,50 @@ func (qs *QuestionService) GetQuestion(ctx context.Context, questionID, userID s
 		per.CanRecover)
 	question.ExtendsActions = permission.GetQuestionExtendsPermission(ctx, per.CanInviteOtherToAnswer)
 	return question, nil
+}
+
+// applyGuestQuestionPreview removes the complete post body from unauthenticated
+// responses. The preview is derived from plain text and escaped before being
+// returned as HTML so the API cannot be used to bypass the login gate.
+func applyGuestQuestionPreview(question *schema.QuestionInfoResp) {
+	if question == nil {
+		return
+	}
+	previewSource := buildGuestQuestionPreview(question.Content)
+	if previewSource == "" {
+		previewSource = question.Description
+	}
+	question.Content = ""
+	question.HTML = converter.Markdown2HTML(previewSource)
+	question.PreviewOnly = true
+	question.MemberActions = nil
+	question.ExtendsActions = nil
+}
+
+const guestQuestionPreviewMaxRunes = 480
+
+// buildGuestQuestionPreview keeps enough of the original Markdown to preserve
+// headings, lists, quotes and code formatting, while always withholding part
+// of a non-trivial post from unauthenticated responses.
+func buildGuestQuestionPreview(content string) string {
+	content = strings.TrimSpace(content)
+	if content == "" {
+		return ""
+	}
+
+	runes := []rune(content)
+	visibleRunes := len(runes) * 2 / 3
+	if visibleRunes < 1 {
+		visibleRunes = 1
+	}
+	if visibleRunes > guestQuestionPreviewMaxRunes {
+		visibleRunes = guestQuestionPreviewMaxRunes
+	}
+	preview := strings.TrimSpace(string(runes[:visibleRunes]))
+	if visibleRunes < len(runes) {
+		preview += "\n\n…"
+	}
+	return preview
 }
 
 // GetQuestionAndAddPV get question one

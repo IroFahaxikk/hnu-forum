@@ -157,6 +157,7 @@ func (ac *AnswerController) RecoverAnswer(ctx *gin.Context) {
 // @Tags Answer
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id query string true "id"
 // @Success 200 {object} handler.RespBody{data=schema.GetAnswerInfoResp}
 // @Router /answer/api/v1/answer/info [get]
@@ -363,6 +364,7 @@ func (ac *AnswerController) UpdateAnswer(ctx *gin.Context) {
 // @Tags Answer
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param question_id query string true "question_id"
 // @Param order query string true "order"
 // @Param page query string true "page"

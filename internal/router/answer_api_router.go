@@ -178,12 +178,7 @@ func (a *AnswerAPIRouter) RegisterUnAuthAnswerAPIRouter(r *gin.RouterGroup) {
 	r.GET("/user/ranking", a.userController.UserRanking)
 	r.GET("/user/staff", a.userController.UserStaff)
 
-	// answer
-	r.GET("/answer/info", a.answerController.GetAnswerInfo)
-	r.GET("/answer/page", a.answerController.AnswerList)
-	// Forum-oriented aliases: answers are top-level comments on posts.
-	r.GET("/post/comment/info", a.answerController.GetAnswerInfo)
-	r.GET("/post/comment/page", a.answerController.AnswerList)
+	// Public profile activity only contains post metadata, not reply bodies.
 	r.GET("/personal/answer/page", a.questionController.PersonalAnswerPage)
 	r.GET("/personal/post/comment/page", a.questionController.PersonalAnswerPage)
 
@@ -201,12 +196,10 @@ func (a *AnswerAPIRouter) RegisterUnAuthAnswerAPIRouter(r *gin.RouterGroup) {
 	r.GET("/personal/post/page", a.questionController.PersonalQuestionPage)
 	r.GET("/question/link", a.questionController.GetQuestionLink)
 
-	// comment
-	r.GET("/comment/page", a.commentController.GetCommentWithPage)
+	// Public profile activity only contains reply metadata, not post details.
 	r.GET("/personal/comment/page", a.commentController.GetCommentPersonalWithPage)
 	// Forum-oriented alias: low-level comments are replies.
 	r.GET("/personal/reply/page", a.commentController.GetCommentPersonalWithPage)
-	r.GET("/comment", a.commentController.GetComment)
 
 	// tag
 	r.GET("/tags/page", a.tagController.GetTagWithPage)
@@ -233,6 +226,14 @@ func (a *AnswerAPIRouter) RegisterAuthUserWithAnyStatusAnswerAPIRouter(r *gin.Ro
 }
 
 func (a *AnswerAPIRouter) RegisterAnswerAPIRouter(r *gin.RouterGroup) {
+	// Post details beyond the guest preview require authentication.
+	r.GET("/answer/info", a.answerController.GetAnswerInfo)
+	r.GET("/answer/page", a.answerController.AnswerList)
+	r.GET("/post/comment/info", a.answerController.GetAnswerInfo)
+	r.GET("/post/comment/page", a.answerController.AnswerList)
+	r.GET("/comment/page", a.commentController.GetCommentWithPage)
+	r.GET("/comment", a.commentController.GetComment)
+
 	// revisions
 	r.GET("/revisions", a.revisionController.GetRevisionList)
 	r.GET("/revisions/unreviewed", a.revisionController.GetUnreviewedRevisionList)

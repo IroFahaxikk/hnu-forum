@@ -1893,6 +1893,8 @@ definitions:
         $ref: '#/definitions/schema.Operation'
       pin:
         type: integer
+      preview_only:
+        type: boolean
       section_id:
         type: integer
       show:
@@ -5474,6 +5476,8 @@ paths:
                 data:
                   $ref: '#/definitions/schema.GetAnswerInfoResp'
               type: object
+      security:
+      - ApiKeyAuth: []
       summary: Get Answer Detail
       tags:
       - Answer
@@ -5510,6 +5514,8 @@ paths:
           description: OK
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: AnswerList
       tags:
       - Answer
@@ -5760,6 +5766,8 @@ paths:
                         type: array
                     type: object
               type: object
+      security:
+      - ApiKeyAuth: []
       summary: get comment by id
       tags:
       - Comment
@@ -5856,6 +5864,8 @@ paths:
                         type: array
                     type: object
               type: object
+      security:
+      - ApiKeyAuth: []
       summary: get comment page
       tags:
       - Comment

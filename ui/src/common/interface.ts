@@ -273,6 +273,7 @@ export interface QuestionDetailRes {
   user_info: UserInfoBase;
   answered: boolean;
   collected: boolean;
+  preview_only: boolean;
   answer_ids: string[];
 
   [prop: string]: any;

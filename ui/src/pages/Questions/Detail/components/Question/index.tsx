@@ -32,8 +32,9 @@ import {
   htmlRender,
   ImgViewer,
 } from '@/components';
+import { loginSettingStore } from '@/stores';
 import { useRenderHtmlPlugin } from '@/utils/pluginKit';
-import { formatCount, guard } from '@/utils';
+import { floppyNavigation, formatCount, guard } from '@/utils';
 import { following } from '@/services';
 import { pathFactory } from '@/router/pathFactory';
 
@@ -51,6 +52,9 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
   const [searchParams] = useSearchParams();
   const [followed, setFollowed] = useState(data?.is_followed);
   const ref = useRef<HTMLDivElement>(null);
+  const allowRegistration = loginSettingStore(
+    (state) => state.login.allow_new_registrations,
+  );
 
   useRenderHtmlPlugin(ref.current);
 
@@ -144,26 +148,58 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
             {t('Views')} {formatCount(data.view_count)}
           </div>
         )}
-        <OverlayTrigger
-          placement="bottom"
-          overlay={<Tooltip id="followTooltip">{t('follow_tip')}</Tooltip>}>
-          <Button
-            variant="link"
-            size="sm"
-            className="p-0 btn-no-border"
-            onClick={(e) => handleFollow(e)}>
-            {t(followed ? 'Following' : 'Follow')}
-          </Button>
-        </OverlayTrigger>
+        {!data.preview_only && (
+          <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="followTooltip">{t('follow_tip')}</Tooltip>}>
+            <Button
+              variant="link"
+              size="sm"
+              className="p-0 btn-no-border"
+              onClick={(e) => handleFollow(e)}>
+              {t(followed ? 'Following' : 'Follow')}
+            </Button>
+          </OverlayTrigger>
+        )}
       </div>
 
-      <ImgViewer>
-        <article
-          ref={ref}
-          className="fmt text-break text-wrap last-p mb-4"
-          dangerouslySetInnerHTML={{ __html: data?.html }}
-        />
-      </ImgViewer>
+      <div className={data.preview_only ? 'guest-preview' : undefined}>
+        <div
+          className={data.preview_only ? 'guest-preview-content' : undefined}>
+          <ImgViewer>
+            <article
+              ref={ref}
+              className="fmt text-break text-wrap last-p mb-4"
+              dangerouslySetInnerHTML={{ __html: data?.html }}
+            />
+          </ImgViewer>
+        </div>
+
+        {data.preview_only && (
+          <div className="guest-preview-gate rounded-3 border p-4 text-center">
+            <h2 className="h5 mb-2">{t('guest_preview.title')}</h2>
+            <p className="text-secondary mb-3">
+              {t('guest_preview.description')}
+            </p>
+            <div className="d-flex flex-wrap justify-content-center gap-2">
+              <Link
+                to="/users/login"
+                className="btn btn-primary"
+                onClick={floppyNavigation.storageLoginRedirect}>
+                {t('login', { keyPrefix: 'btns' })}
+              </Link>
+              {allowRegistration && (
+                <Link
+                  to="/users/register"
+                  className="btn btn-outline-primary"
+                  onClick={floppyNavigation.storageLoginRedirect}>
+                  {t('signup', { keyPrefix: 'btns' })}
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="m-n1">
         {data?.tags?.map((item: any) => {
@@ -171,36 +207,40 @@ const Index: FC<Props> = ({ data, initPage, hasAnswer, isLogged }) => {
         })}
       </div>
 
-      <Actions
-        className="mt-4"
-        source="question"
-        data={{
-          id: data?.id,
-          isHate: data?.vote_status === 'vote_down',
-          isLike: data?.vote_status === 'vote_up',
-          votesCount: data?.vote_count,
-          collected: data?.collected,
-          collectCount: data?.collection_count,
-          username: data.user_info?.username,
-        }}
-      />
-
-      <div className="mt-4">
-        <Comment
-          objectId={data?.id}
-          mode="question"
-          commentId={searchParams.get('commentId')}>
-          <Operate
-            qid={data?.id}
-            type="question"
-            memberActions={data?.member_actions}
-            title={data.title}
-            hasAnswer={hasAnswer}
-            isAccepted={Boolean(data?.accepted_answer_id)}
-            callback={initPage}
+      {!data.preview_only && (
+        <>
+          <Actions
+            className="mt-4"
+            source="question"
+            data={{
+              id: data?.id,
+              isHate: data?.vote_status === 'vote_down',
+              isLike: data?.vote_status === 'vote_up',
+              votesCount: data?.vote_count,
+              collected: data?.collected,
+              collectCount: data?.collection_count,
+              username: data.user_info?.username,
+            }}
           />
-        </Comment>
-      </div>
+
+          <div className="mt-4">
+            <Comment
+              objectId={data?.id}
+              mode="question"
+              commentId={searchParams.get('commentId')}>
+              <Operate
+                qid={data?.id}
+                type="question"
+                memberActions={data?.member_actions}
+                title={data.title}
+                hasAnswer={hasAnswer}
+                isAccepted={Boolean(data?.accepted_answer_id)}
+                callback={initPage}
+              />
+            </Comment>
+          </div>
+        </>
+      )}
     </div>
   );
 };

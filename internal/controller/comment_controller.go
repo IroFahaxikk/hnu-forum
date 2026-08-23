@@ -234,6 +234,7 @@ func (cc *CommentController) UpdateComment(ctx *gin.Context) {
 // @Description get comment page
 // @Tags Comment
 // @Produce json
+// @Security ApiKeyAuth
 // @Param page query int false "page"
 // @Param page_size query int false "page size"
 // @Param object_id query string true "object id"
@@ -291,6 +292,7 @@ func (cc *CommentController) GetCommentPersonalWithPage(ctx *gin.Context) {
 // @Description get comment by id
 // @Tags Comment
 // @Produce json
+// @Security ApiKeyAuth
 // @Param id query string true "id"
 // @Success 200 {object} handler.RespBody{data=pager.PageModel{list=[]schema.GetCommentResp}}
 // @Router /answer/api/v1/comment [get]

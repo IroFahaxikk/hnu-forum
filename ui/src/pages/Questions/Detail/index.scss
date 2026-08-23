@@ -61,6 +61,39 @@
   border-top: 1px solid var(--an-answer-item-border-top);
 }
 
+.guest-preview {
+  margin-bottom: 1.5rem;
+
+  &-content {
+    position: relative;
+    max-height: 22rem;
+    overflow: hidden;
+
+    &::after {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 8rem;
+      pointer-events: none;
+      content: '';
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--bs-body-bg) 88%
+      );
+    }
+  }
+
+  &-gate {
+    position: relative;
+    z-index: 1;
+    margin-top: -2.5rem;
+    background: color-mix(in srgb, var(--bs-primary) 6%, var(--bs-body-bg));
+    box-shadow: 0 0.5rem 1.5rem rgba(var(--bs-body-color-rgb), 0.08);
+  }
+}
+
 .smile-btn.active::before {
   position: fixed;
   top: 0;

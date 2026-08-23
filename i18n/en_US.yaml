@@ -1482,6 +1482,9 @@ ui:
     search: Search people
   question_detail:
     action: Action
+    guest_preview:
+      title: This post is folded—log in to keep reading
+      description: Only a preview is shown. Log in or register to view the full post and all comments.
     created: Created
     Asked: Posted
     asked: posted

@@ -3198,6 +3198,11 @@ const docTemplate = `{
         },
         "/answer/api/v1/answer/info": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get Answer Detail",
                 "consumes": [
                     "application/json"
@@ -3242,6 +3247,11 @@ const docTemplate = `{
         },
         "/answer/api/v1/answer/page": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "AnswerList \u003cbr\u003e \u003cb\u003eorder\u003c/b\u003e (default or updated)",
                 "consumes": [
                     "application/json"
@@ -3624,6 +3634,11 @@ const docTemplate = `{
         },
         "/answer/api/v1/comment": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get comment by id",
                 "produces": [
                     "application/json"
@@ -3803,6 +3818,11 @@ const docTemplate = `{
         },
         "/answer/api/v1/comment/page": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get comment page",
                 "produces": [
                     "application/json"
@@ -11348,6 +11368,9 @@ const docTemplate = `{
                 },
                 "pin": {
                     "type": "integer"
+                },
+                "preview_only": {
+                    "type": "boolean"
                 },
                 "section_id": {
                     "type": "integer"

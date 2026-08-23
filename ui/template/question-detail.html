@@ -58,10 +58,25 @@
             <button type="button" class="p-0 btn-no-border btn btn-link btn-sm">{{translator $.language "ui.question_detail.Follow"}}</button>
           </div>
 
-          <div class="img-viewer">
-            <article class="fmt text-break text-wrap last-p mt-4">
-              {{formatLinkNofollow .detail.HTML}}
-            </article>
+          <div class="{{if .detail.PreviewOnly}}guest-preview{{end}}">
+            <div class="{{if .detail.PreviewOnly}}guest-preview-content{{end}}">
+              <div class="img-viewer">
+                <article class="fmt text-break text-wrap last-p mt-4">
+                  {{formatLinkNofollow .detail.HTML}}
+                </article>
+              </div>
+            </div>
+
+            {{if .detail.PreviewOnly}}
+            <div class="guest-preview-gate rounded-3 border p-4 text-center">
+              <h2 class="h5 mb-2">{{translator $.language "ui.question_detail.guest_preview.title"}}</h2>
+              <p class="text-secondary mb-3">{{translator $.language "ui.question_detail.guest_preview.description"}}</p>
+              <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a class="btn btn-primary" href="{{$.baseURL}}/users/login">{{translator $.language "ui.btns.login"}}</a>
+                <a class="btn btn-outline-primary" href="{{$.baseURL}}/users/register">{{translator $.language "ui.btns.signup"}}</a>
+              </div>
+            </div>
+            {{end}}
           </div>
 
           <div class="m-n1">
@@ -73,6 +88,7 @@
             {{end}}
           </div>
 
+          {{if not .detail.PreviewOnly}}
           <div class="mt-4">
             <div role="group" class="btn-group">
               <button type="button" class="btn btn-outline-secondary">
@@ -178,6 +194,7 @@
             {{template "comment" (wrapComments (index $.comments .ID) $.language $.timezone)}}
           </div>
         </div>
+        {{end}}
         {{end}}
       </div>
       <div class="page-right-side mt-4 mt-xl-0 col">

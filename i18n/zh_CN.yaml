@@ -1456,6 +1456,9 @@ ui:
     search: 搜索人员
   question_detail:
     action: 操作
+    guest_preview:
+      title: 内容已折叠，登录后继续阅读
+      description: 当前仅展示部分内容。登录或注册后即可查看完整帖子和全部评论。
     created: 创建于
     Asked: 发布于
     asked: 发布于

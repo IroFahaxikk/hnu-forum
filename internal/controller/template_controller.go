@@ -340,31 +340,12 @@ func (tc *TemplateController) QuestionInfo(ctx *gin.Context) {
 		return
 	}
 
-	// answers
-	answerReq := &schema.AnswerListReq{
-		QuestionID: id,
-		Order:      "",
-		Page:       1,
-		PageSize:   999,
-		UserID:     "",
-	}
-	answers, answerCount, err := tc.templateRenderController.AnswerList(ctx, answerReq)
-	if err != nil {
-		tc.Page404(ctx)
-		return
-	}
-
-	// comments
-	objectIDs := []string{uid.DeShortID(id)}
-	for _, answer := range answers {
-		answerID := uid.DeShortID(answer.ID)
-		objectIDs = append(objectIDs, answerID)
-	}
-	comments, err := tc.templateRenderController.CommentList(ctx, objectIDs)
-	if err != nil {
-		tc.Page404(ctx)
-		return
-	}
+	// Public template routes never receive authenticated user context. Keep the
+	// server-rendered page to the same guest preview as the public API so the
+	// complete post and comments cannot be recovered from HTML or JSON-LD.
+	answers := make([]*schema.AnswerInfo, 0)
+	answerCount := int64(0)
+	comments := make(map[string][]*schema.GetCommentResp)
 
 	UrlUseTitle := siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitle ||
 		siteInfo.SiteSeo.Permalink == constant.PermalinkQuestionIDAndTitleByShortID
