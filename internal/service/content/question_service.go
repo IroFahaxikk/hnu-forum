@@ -1155,13 +1155,7 @@ func buildGuestQuestionPreview(content string) string {
 	}
 
 	runes := []rune(content)
-	visibleRunes := len(runes) * 2 / 3
-	if visibleRunes < 1 {
-		visibleRunes = 1
-	}
-	if visibleRunes > guestQuestionPreviewMaxRunes {
-		visibleRunes = guestQuestionPreviewMaxRunes
-	}
+	visibleRunes := min(guestQuestionPreviewMaxRunes, max(1, len(runes)*2/3))
 	preview := strings.TrimSpace(string(runes[:visibleRunes]))
 	if visibleRunes < len(runes) {
 		preview += "\n\n…"
